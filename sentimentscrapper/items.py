@@ -8,7 +8,13 @@
 import scrapy
 
 
-class SentimentscrapperItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class AmazonReviewItem(scrapy.Item):
+    
+    comment = scrapy.Field()
+    description = scrapy.Field()
+    # Number of stars out of 5
+    stars = scrapy.Field()
+    # Example : ['Electronics','PC','Accessories','Keyboards']
+    # Might be useful later if we want to filter some data
+    keywords = scrapy.Field()
+    date = scrapy.Field()
