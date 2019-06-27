@@ -60,21 +60,32 @@ class AmazonSpider(scrapy.Spider):
         yield scrapy.Request(self.categories_url, self.parse)
 
 
-    # Parses the response 
+    # Parses the initial page of categories, "Departments" page
     # Returns a dictionary with the categories names as keys and their links as values
-    def extract_categories_links(self,response):
+    def extract_categories_links(self, response):
         links = response.css('div.left_nav a::attr(href)').getall()
         categories = response.css('div.left_nav a::text').getall()
         categories_links_dict = dict(zip(categories,links))   
+        # Remove unselected categories
         categories_links_dict = { k:v for k,v in categories_links_dict.items() if k in self.categories_to_crawl }
         return categories_links_dict
 
+    # Parses sub categories and return a list with the sub 
+    # categories names as keys and their links as values. If no 
+    # sub categories exist, returns None
+    def extract_sub_categories_links(self, response):
+        subCategories_links = response.xpath("//li/span/a[contains(@href,\"?i\")][span[contains(@class,\"a-color-base\")]]/@href").getall()
+        if not subCategories_links:
+            return None
+        return subCategories_links
 
     # The main parser of all requests
     #
     # 1- Check for the first response as it has different parsing
     #    If so, yield requests for the categories specified in [categories_to_crawl]
-    def parse(self,response): 
+    #
+    # 2- Navigate to sub-categories until there are no more sub-categories 
+    def parse(self, response): 
 
         if self.initial_response==True:
             categories_links_dict = self.extract_categories_links(response)
@@ -83,9 +94,4 @@ class AmazonSpider(scrapy.Spider):
             self.initial_response = False
             return
 
-            
-
-    
-        
-    
-        
+        sub_categories_links = self.extract_sub_categories_links(response)
