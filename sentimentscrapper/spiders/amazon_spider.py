@@ -70,13 +70,14 @@ class AmazonSpider(scrapy.Spider):
         categories_links_dict = { k:v for k,v in categories_links_dict.items() if k in self.categories_to_crawl }
         return categories_links_dict
 
+
     # Parses sub categories and return a list with the sub 
     # categories names as keys and their links as values. If no 
-    # sub categories exist, returns None
+    # sub categories exist, returns empty list []
     def extract_sub_categories_links(self, response):
         subCategories_links = response.xpath("//li/span/a[contains(@href,\"?i\")][span[contains(@class,\"a-color-base\")]]/@href").getall()
         if not subCategories_links:
-            return None
+            return []
         return subCategories_links
 
     # The main parser of all requests
