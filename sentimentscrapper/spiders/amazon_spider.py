@@ -76,8 +76,6 @@ class AmazonSpider(scrapy.Spider):
     # sub categories exist, returns empty list []
     def extract_sub_categories_links(self, response):
         subCategories_links = response.xpath("//li/span/a[contains(@href,\"?i\")][span[contains(@class,\"a-color-base\")]]/@href").getall()
-        if not subCategories_links:
-            return []
         return subCategories_links
 
     # The main parser of all requests
