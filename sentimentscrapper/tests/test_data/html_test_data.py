@@ -1,6 +1,7 @@
 class HtmlTestData():
-    
-    sub_categories_html = ["""
+
+    sub_categories_html = {
+        """
         <li>
             <span class="a-list-item">
                 <a class="a-link-normal s-ref-text-link" href="b?ie=whatever">
@@ -10,9 +11,12 @@ class HtmlTestData():
                 </a>
             </span>
         </li>
-    """,
-    """
-    <html>
+    """:
+        ["b?ie=whatever"],
+    ##############################
+        """
+    
+    <body>
         <li>
             <span class="a-list-item">
                 <a class="a-link-normal s-ref-text-link" href="b?ie=whatever">
@@ -23,23 +27,25 @@ class HtmlTestData():
                 </a>
             </span>
         </li>
-    </html>
-    """
-    ]
-
-    no_sub_categories_html = ["""
+    </body>
+    
+    """:   ["b?ie=whatever"],
+    ##############################
+        """
         <li>
             <span class="a-list-item">
-                <span></span>
+                <span>
                 <a class="a-link-normal s-ref-text-link" href="b?ie=notExtracted">
                     <span class="a-size-small a-color-base">
                         Kids' Home Store
                     </span>
                 </a>
+                </span>
             </span>
         </li>
-    """,
-    """
+    """: [],
+    ##############################
+        """
     <html>
         <li>
             <span class="a-list-item">
@@ -51,8 +57,9 @@ class HtmlTestData():
             </span>
         </li>
     </html>
-    """,
-    """
+    """: [],
+    ##############################
+        """
     <html>
         <li>
             <span class="a-list-item">
@@ -64,5 +71,5 @@ class HtmlTestData():
             </span>
         </li>
     </html>
-    """
-    ]
+    """: []
+    }
