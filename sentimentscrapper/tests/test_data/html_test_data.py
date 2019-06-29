@@ -3,6 +3,11 @@ class HtmlTestData():
     sub_categories_html = {
         """
         <li>
+            <span>
+                <h4> Hello </h4>
+            </span>
+        </li>
+        <li>
             <span class="a-list-item">
                 <a class="a-link-normal s-ref-text-link" href="b?ie=whatever">
                     <span class="a-size-small a-color-base">
@@ -17,6 +22,16 @@ class HtmlTestData():
         """
     
     <body>
+        <li>
+            <span>
+                <h4> Hello </h4>
+            </span>
+        </li>
+        <li>
+            <span>
+                <h4> Hello </h4>
+            </span>
+        </li>
         <li>
             <span class="a-list-item">
                 <a class="a-link-normal s-ref-text-link" href="b?ie=whatever">
@@ -33,6 +48,11 @@ class HtmlTestData():
     ##############################
         """
         <li>
+            <span>
+                <h4> Hello </h4>
+            </span>
+        </li>
+        <li>
             <span class="a-list-item">
                 <span>
                 <a class="a-link-normal s-ref-text-link" href="b?ie=notExtracted">
@@ -48,6 +68,11 @@ class HtmlTestData():
         """
     <html>
         <li>
+            <span>
+                <h4> Hello </h4>
+            </span>
+        </li>
+        <li>
             <span class="a-list-item">
                 <a class="a-link-normal s-ref-text-link" href="/s/ref=lp_1622501101">
                     <span class="a-size-small a-color-base">
@@ -61,6 +86,11 @@ class HtmlTestData():
     ##############################
         """
     <html>
+        <li>
+            <span>
+                <h4> Hello </h4>
+            </span>
+        </li>
         <li>
             <span class="a-list-item">
                 <a class="a-link-normal s-ref-text-link" href="/s/ref=lp_1622501101">
