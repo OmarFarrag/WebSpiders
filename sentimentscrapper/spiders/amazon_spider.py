@@ -75,8 +75,9 @@ class AmazonSpider(scrapy.Spider):
     # categories names as keys and their links as values. If no 
     # sub categories exist, returns empty list []
     def extract_sub_categories_links(self, response):
-        subCategories_links = response.xpath("//li/span/a[contains(@href,\"?i\")][span[contains(@class,\"a-color-base\")]]/@href").getall()
+        subCategories_links = response.xpath("//li/span/h4/following::li/span/a[contains(@href,\"?i\")][span[contains(@class,\"a-color-base\")]]/@href").getall()
         return subCategories_links
+
 
     # The main parser of all requests
     #
@@ -85,7 +86,7 @@ class AmazonSpider(scrapy.Spider):
     #
     # 2- Navigate to sub-categories until there are no more sub-categories 
     def parse(self, response): 
-
+        #### 1
         if self.initial_response==True:
             categories_links_dict = self.extract_categories_links(response)
             for category, link in categories_links_dict.items():
@@ -93,4 +94,11 @@ class AmazonSpider(scrapy.Spider):
             self.initial_response = False
             return
 
+        #### 2
         sub_categories_links = self.extract_sub_categories_links(response)
+        if sub_categories_links:
+            for link in sub_categories_links:
+                yield scrapy.Request(link, callback = self.parse)
+        else:
+            pass    
+        
