@@ -46,13 +46,6 @@ class AmazonSpider(scrapy.Spider):
             self.categories_to_crawl = [x.strip() for x in ( passed_categories.split('-') )]
       
 
-
-    # This function checks if there are sub-categories within the category we are right now.
-    # If there is at least one category, it returns a list of these sub-categorie
-    def check_for_categories(self,response):
-        pass
-
-
     # First functions gets execution
     # Yileds requests to the main categories 
     def start_requests(self):
