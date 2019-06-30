@@ -2,6 +2,7 @@ import unittest
 from sentimentscrapper.tests.test_data.html_test_data import HtmlTestData as td
 from sentimentscrapper.spiders.amazon_spider import AmazonSpider
 from scrapy.http import TextResponse
+from scrapy.http import Request
 
 class AmazonSpiderTest(unittest.TestCase):
     
@@ -42,6 +43,17 @@ class AmazonSpiderTest(unittest.TestCase):
             with self.subTest():
                 self.assertEqual(amazon_spider.extract_next_pagination(response), result, "data index {}".format(i))
             i = i+1
+    
+    
+    def test_see_all_reviews(self):
+        amazon_spider = AmazonSpider()
+        response = TextResponse(url = "",encoding="utf8")
+        response._set_body("<a href=\"/pass\">all revs See now </a>")
+        result = next(amazon_spider.see_all_reviews(response))
+        #self.assertIs(result, generator)
+        self.assertIsInstance(result, Request)
+        self.assertEqual(result.url, amazon_spider.base_url+"/pass"
+        )
     
 
     if __name__ == '__main__' :   
