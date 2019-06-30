@@ -84,6 +84,12 @@ class AmazonSpider(scrapy.Spider):
     def extract_products_links(self,response):
         return response.css("*.s-search-results a::attr(href)").getall()
 
+
+    # Extracts the link of next page through pagination  
+    def extract_next_pagination(self, response):
+        return response.css("ul.a-pagination li.a-last a::attr(href)").get()
+
+
     # The main parser of all requests
     #
     # 1- Check for the first response as it has different parsing
@@ -112,7 +118,8 @@ class AmazonSpider(scrapy.Spider):
             products_links = self.extract_products_links(response)
             for link in products_links:
                 yield scrapy.Request( self.base_url+link, callback = self.parse)
-            #next_page_link = self.extract_next_page_link(response)
+            next_page_link = self.extract_next_pagination(response)
+            yield scrapy.Request( self.base_url + next_page_link, callback = self.parse)
                 
                   
         
