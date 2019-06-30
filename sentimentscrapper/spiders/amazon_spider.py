@@ -82,7 +82,7 @@ class AmazonSpider(scrapy.Spider):
     # Extracts the links of the products and returns a list
     # with their links .. If no products returns empty list
     def extract_products_links(self,response):
-        return response.css("*.s-search-results a::attr(href)").getall()
+        return response.css("*.s-search-results").xpath(".//a[span]/@href").getall()
 
 
     # Extracts the link of next page through pagination  
