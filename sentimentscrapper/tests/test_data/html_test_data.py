@@ -162,3 +162,39 @@ class HtmlTestData():
         """:
         []
     }
+
+    pagination = {
+        """
+        <ul class="a-pagination">
+            <li class="a-last">
+                <a href="pass">
+                    <div><span></span></div>
+                </a>
+            </li>
+        </ul>
+        """:
+        "pass",
+
+        """
+        <ul class="a-pagination">
+            <li class="a-last whatever">
+                <div></div>
+                <a href="pass">
+                    <div><span></span></div>
+                </a>
+            </li>
+        </ul>
+        """:
+        "pass",
+
+        """
+        <ul class="pagination">
+            <li class="a-last">
+                <a href="pass">
+                    <div><span></span></div>
+                </a>
+            </li>
+        </ul>
+        """:
+        None,
+    }
