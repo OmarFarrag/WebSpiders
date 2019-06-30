@@ -57,7 +57,7 @@ class AmazonSpider(scrapy.Spider):
     # Yileds requests to the main categories 
     def start_requests(self):
         self.parse_cmd_args()
-        yield scrapy.Request(self.categories_url, self.parse)
+        yield scrapy.Request(self.categories_url, self.parse_initial_request)
 
 
     # Parses the initial page of categories, "Departments" page
@@ -90,38 +90,47 @@ class AmazonSpider(scrapy.Spider):
         return response.css("ul.a-pagination li.a-last a::attr(href)").get()
 
 
-    # The main parser of all requests
-    #
-    # 1- Check for the first response as it has different parsing
-    #    If so, yield requests for the categories specified in [categories_to_crawl]
-    #
-    # 2- Navigate to sub-categories until there are no more sub-categories
-    #
-    # 3- Open all products in current page and navigate through pagination
-    # to the next page 
-    def parse(self, response): 
-        #### 1
-        if self.initial_response==True:
-            categories_links_dict = self.extract_categories_links(response)
-            for category, link in categories_links_dict.items():
-                yield scrapy.Request(self.base_url+link, callback = self.parse)    
-            self.initial_response = False
-            return
+    # Initial request parsing is different from others so 
+    # processed separately
+    def parse_initial_request(self, response): 
+        categories_links_dict = self.extract_categories_links(response)
+        for category, link in categories_links_dict.items():
+            yield scrapy.Request(self.base_url+link, callback = self.parse_categories)    
+                
 
-        #### 2
+    # Kinda recursive parsing for categories and sub-categories
+    # until no sub-categories exist
+    def parse_categories(self,response):
         sub_categories_links = self.extract_sub_categories_links(response)
         if sub_categories_links:
             for link in sub_categories_links:
-                yield scrapy.Request(link, callback = self.parse)
+                yield scrapy.Request(link, callback = self.parse_categories)
         else:
-            #### 3
+            #TODO: Remove this duplication with self.parse_products
             products_links = self.extract_products_links(response)
             for link in products_links:
-                yield scrapy.Request( self.base_url+link, callback = self.parse)
+                yield scrapy.Request( self.base_url+link, callback = self.parse_comments)
+
             next_page_link = self.extract_next_pagination(response)
-            yield scrapy.Request( self.base_url + next_page_link, callback = self.parse)
-                
-                  
+            if next_page_link is not None: 
+                yield scrapy.Request( self.base_url + next_page_link, callback = self.parse_products)
+    
+
+    # Extracts the links of all products on the page and yield requests for them
+    # Navigate through pagination to next page and repeat extraction
+    def parse_products(self, response):
+        products_links = self.extract_products_links(response)
+        for link in products_links:
+            yield scrapy.Request( self.base_url+link, callback = self.parse_comments)
+
+        next_page_link = self.extract_next_pagination(response)
+        if next_page_link is not None: 
+            yield scrapy.Request( self.base_url + next_page_link, callback = self.parse_products)
+
+    
+    def parse_comments(self,response):
+        pass
+        #print ( response.css("#productTitle::text").get())
         
 
     
