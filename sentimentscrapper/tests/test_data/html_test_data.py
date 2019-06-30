@@ -103,3 +103,62 @@ class HtmlTestData():
     </html>
     """: []
     }
+
+    products_links = {
+        """
+        <div class="s-search-results" >
+        <div></div>
+            <a href="pass">
+            <span><div></div></span></a>
+        </div>
+        """:
+        ["pass"],
+
+        """
+        <div class="s-search-results" >
+        <div></div>
+            <span>
+                <a href="not-passing"></a>
+            </span>
+            <ul>
+                <li>
+                    <a href="pass1">
+                    <span></span></a>
+                </li>
+            </ul>
+            <a href="pass2">
+                    <span></span></a>
+        </div>
+        """:
+        ["pass1","pass2"],
+
+        """
+        <div class="search-results" >
+        <div></div>
+            <span>
+                <a href="none1"></a>
+            </span>
+            <ul>
+                <li>
+                    <a href="none"></a>
+                </li>
+            </ul>
+        </div>
+        """:
+        [],
+        """
+        <div class="s-search-results" >
+        <div></div>
+            <span>
+                <a href="none">
+                </a>
+            </span>
+            <ul>
+                <li>
+                    <a href="pass2"></a>
+                </li>
+            </ul>
+        </div>
+        """:
+        []
+    }
