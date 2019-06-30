@@ -79,12 +79,20 @@ class AmazonSpider(scrapy.Spider):
         return subCategories_links
 
 
+    # Extracts the links of the products and returns a list
+    # with their links .. If no products returns empty list
+    def extract_products_links(self,response):
+        return response.css("*.s-search-results a::attr(href)").getall()
+
     # The main parser of all requests
     #
     # 1- Check for the first response as it has different parsing
     #    If so, yield requests for the categories specified in [categories_to_crawl]
     #
-    # 2- Navigate to sub-categories until there are no more sub-categories 
+    # 2- Navigate to sub-categories until there are no more sub-categories
+    #
+    # 3- Open all products in current page and navigate through pagination
+    # to the next page 
     def parse(self, response): 
         #### 1
         if self.initial_response==True:
@@ -100,5 +108,13 @@ class AmazonSpider(scrapy.Spider):
             for link in sub_categories_links:
                 yield scrapy.Request(link, callback = self.parse)
         else:
-            pass    
+            #### 3
+            products_links = self.extract_products_links(response)
+            for link in products_links:
+                yield scrapy.Request( self.base_url+link, callback = self.parse)
+            #next_page_link = self.extract_next_page_link(response)
+                
+                  
         
+
+    
