@@ -114,13 +114,17 @@ class AmazonSpider(scrapy.Spider):
     def parse_products(self, response):
         products_links = self.extract_products_links(response)
         for link in products_links:
-            yield scrapy.Request( self.base_url+link, callback = self.parse_comments)
+            yield scrapy.Request( self.base_url+link, callback = self.see_all_reviews)
 
         next_page_link = self.extract_next_pagination(response)
         if next_page_link is not None: 
             yield scrapy.Request( self.base_url + next_page_link, callback = self.parse_products)
 
     
+    # Navigate to all reviews page
+    def see_all_reviews(self, response):
+        yield scrapy.Request(self.base_url + response.xpath("//a[contains(text(),\"See\")]/@href").get(), self.parse_comments)
+
     def parse_comments(self,response):
         pass
         #print ( response.css("#productTitle::text").get())
