@@ -1,5 +1,6 @@
 import scrapy
 import logging
+from sentimentscrapper.item_loaders import AmazonReviewLoader
 
 class AmazonSpider(scrapy.Spider):
 
@@ -75,7 +76,7 @@ class AmazonSpider(scrapy.Spider):
     # Extracts the links of the products and returns a list
     # with their links .. If no products returns empty list
     def extract_products_links(self,response):
-        return response.css("*.s-search-results").xpath(".//a[span]/@href").getall()
+        return response.css("*.s-result-list").xpath(".//a[span]/@href").getall()
 
 
     # Extracts the link of next page through pagination  
@@ -99,19 +100,12 @@ class AmazonSpider(scrapy.Spider):
             for link in sub_categories_links:
                 yield scrapy.Request(link, callback = self.parse_categories)
         else:
-            #TODO: Remove this duplication with self.parse_products
-            products_links = self.extract_products_links(response)
-            for link in products_links:
-                yield scrapy.Request( self.base_url+link, callback = self.parse_comments)
-
-            next_page_link = self.extract_next_pagination(response)
-            if next_page_link is not None: 
-                yield scrapy.Request( self.base_url + next_page_link, callback = self.parse_products)
-    
+            return self.parse_products(response)
 
     # Extracts the links of all products on the page and yield requests for them
     # Navigate through pagination to next page and repeat extraction
     def parse_products(self, response):
+        print("pars")
         products_links = self.extract_products_links(response)
         for link in products_links:
             yield scrapy.Request( self.base_url+link, callback = self.see_all_reviews)
@@ -126,8 +120,10 @@ class AmazonSpider(scrapy.Spider):
         yield scrapy.Request(self.base_url + response.xpath("//a[contains(text(),\"See\")]/@href").get(), self.parse_comments)
 
     def parse_comments(self,response):
-        pass
-        #print ( response.css("#productTitle::text").get())
+        for review in response.css("#cm_cr-review_list .a-section celwidget"):
+            loader = AmazonReviewLoader( selector = review )
+            loader.add_xpath('comment','//a[contains(@data-hook,\"review-title\")]/span/text()')
+            print(loader.load_item().comment)
         
 
     
