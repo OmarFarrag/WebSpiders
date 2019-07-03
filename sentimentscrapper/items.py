@@ -9,10 +9,9 @@ import scrapy
 
 
 class AmazonReviewItem(scrapy.Item):
-    
+    # The main comment
     comment = scrapy.Field()
-    description = scrapy.Field()
-    # Number of stars out of 5
+    # No of starts out of 5
     stars = scrapy.Field()
     # Example : ['Electronics','PC','Accessories','Keyboards']
     # Might be useful later if we want to filter some data
