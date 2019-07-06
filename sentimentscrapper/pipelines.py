@@ -6,6 +6,16 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-class AmazonReviewsPipeline(object):
+class AmazonReviewsVerificationPipeline(object):
     def process_item(self, item, spider):
-        return item
+        if item.get('stars'):
+            if item.get('comment'):
+                if item.get('date'):
+                    return item
+                else:
+                    raise DropItem("Missing date")
+            else:
+                raise DropItem("Missing comment")
+        else:
+            raise DropItem("Missing stars")
+        
