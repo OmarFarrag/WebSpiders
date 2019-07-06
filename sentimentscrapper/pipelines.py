@@ -6,6 +6,6 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-class SentimentscrapperPipeline(object):
+class AmazonReviewsPipeline(object):
     def process_item(self, item, spider):
         return item
