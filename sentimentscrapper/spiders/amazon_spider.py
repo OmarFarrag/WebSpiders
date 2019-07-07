@@ -1,6 +1,7 @@
 import scrapy
 import logging
 from sentimentscrapper.item_loaders import AmazonReviewLoader
+from urllib.parse import urljoin
 
 class AmazonSpider(scrapy.Spider):
 
@@ -96,7 +97,7 @@ class AmazonSpider(scrapy.Spider):
     def parse_initial_request(self, response): 
         categories_links_dict = self.extract_categories_links(response)
         for category, link in categories_links_dict.items():
-            yield scrapy.Request(self.base_url+link, callback = self.parse_categories)    
+            yield scrapy.Request( urljoin(self.base_url,link), callback = self.parse_categories)    
                 
 
     # Kinda recursive parsing for categories and sub-categories
@@ -105,18 +106,18 @@ class AmazonSpider(scrapy.Spider):
         sub_categories_links = self.extract_sub_categories_links(response)
         if sub_categories_links:
             for link in sub_categories_links:
-                yield scrapy.Request(link, callback = self.parse_categories)
+                yield scrapy.Request( urljoin(self.base_url,link), callback = self.parse_categories)
         else:
             # No sub categories found
                   
             #TODO: Remove this duplication with self.parse_products
             products_links = self.extract_products_links(response)
             for link in products_links:
-                yield scrapy.Request( link, callback = self.see_all_reviews)
+                yield scrapy.Request( urljoin(self.base_url,link), callback = self.see_all_reviews)
 
             next_page_link = self.extract_next_pagination(response)
             if next_page_link is not None: 
-                yield scrapy.Request( self.base_url + next_page_link, callback = self.parse_products)
+                yield scrapy.Request( urljoin(self.base_url,next_page_link), callback = self.parse_products)
 
 
     # Extracts the links of all products on the page and yield requests for them
@@ -124,18 +125,18 @@ class AmazonSpider(scrapy.Spider):
     def parse_products(self, response):
         products_links = self.extract_products_links(response)
         for link in products_links:
-            yield scrapy.Request( self.base_url+link, callback = self.see_all_reviews)
+            yield scrapy.Request( urljoin(self.base_url,link), callback = self.see_all_reviews)
 
         next_page_link = self.extract_next_pagination(response)
         if next_page_link is not None: 
-            yield scrapy.Request( self.base_url + next_page_link, callback = self.parse_products)
+            yield scrapy.Request( urljoin(self.base_url,next_page_link), callback = self.parse_products)
 
     
     # Navigate to all reviews page
     def see_all_reviews(self, response):
         see_all_revs_link = response.xpath("//a[contains(text(),\"reviews\")]/@href").get()
         if see_all_revs_link is not None:
-            yield scrapy.Request(self.base_url + see_all_revs_link, self.parse_reviews)
+            yield scrapy.Request( urljoin(self.base_url, see_all_revs_link), self.parse_reviews)
     
 
     # Extracts the comment, date and stars through
@@ -149,8 +150,8 @@ class AmazonSpider(scrapy.Spider):
             yield loader.load_item()
 
         next_reviews_page = response.xpath('//a[text()="Next page"]/@href').get()
-        if next_reviews_page is not None:
-            yield scrapy.Request( self.base_url + next_reviews_page, self.parse_reviews)
+        if next_reviews_page is not None:    
+            yield scrapy.Request( urljoin(self.base_url, next_reviews_page), self.parse_reviews)
         
 
     
