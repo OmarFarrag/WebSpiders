@@ -38,7 +38,7 @@ class AmazonSpider(scrapy.Spider):
     # If passed, set `categories_to_crawl` with them
     # Else, set it to default categories
     #
-    # Arguments are passed like "-a categories = cat1-cat2-cat3-cat4"
+    # Arguments are passed like "-a categories=cat1-cat2-cat3-cat4"
     def parse_cmd_args(self):
        # Get the categoriess passed as cmd args
         passed_categories = getattr(self,'categories',None)
@@ -91,6 +91,10 @@ class AmazonSpider(scrapy.Spider):
             link = response.css("#pagnNextLink::attr(href)").get()
         return link
 
+    def extract_keywords(self, response):
+        return response.css('#wayfinding-breadcrumbs_feature_div a::text').getall()
+        
+
 
     # Initial request parsing is different from others so 
     # processed separately
@@ -136,7 +140,11 @@ class AmazonSpider(scrapy.Spider):
     def see_all_reviews(self, response):
         see_all_revs_link = response.xpath("//a[contains(text(),\"reviews\")]/@href").get()
         if see_all_revs_link is not None:
-            yield scrapy.Request( urljoin(self.base_url, see_all_revs_link), self.parse_reviews)
+            url = urljoin(self.base_url, see_all_revs_link)
+            req = scrapy.Request( url, self.parse_reviews)
+            keywords = self.extract_keywords(response)
+            req.meta['keywords'] = keywords
+            yield req
     
 
     # Extracts the comment, date and stars through
@@ -147,6 +155,7 @@ class AmazonSpider(scrapy.Spider):
             loader.add_css('stars','.a-icon-alt::text')           
             loader.add_xpath('date','.//span[contains(@data-hook,"review-date")]/text()')
             loader.add_xpath('comment','.//a[contains(@data-hook,"review-title")]/span/text()')
+            loader.add_value('keywords',response.meta['keywords'])
             yield loader.load_item()
 
         next_reviews_page = response.xpath('//a[text()="Next page"]/@href').get()
