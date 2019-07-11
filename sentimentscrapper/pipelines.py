@@ -28,7 +28,7 @@ class AmazonReviewCSVExportPipeline(object):
     def open_spider(self, spider):
         f = open('amazon_reviews.csv','wb')
         self.exporter = CsvItemExporter(f)
-        self.exporter.start_exporting()
+
 
     def process_item(self, item, spider):
         self.exporter.export_item(item)
@@ -36,4 +36,3 @@ class AmazonReviewCSVExportPipeline(object):
 
     def close_spider(self, spider):
         self.exporter.finish_exporting()
-        self.exporter.file.close()
