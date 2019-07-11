@@ -1,2 +1,3 @@
-# Sentiment Scrapper
-A web scrapper built with scrapy to build a sentiment analysis dataset 
+# Sentiment Spiders
+    Web spiders written with Python/Scrapy that are directed towards extracting information to build datasets for sentiment analysis
+
