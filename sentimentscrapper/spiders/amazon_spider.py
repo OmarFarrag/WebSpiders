@@ -24,14 +24,15 @@ class AmazonSpider(scrapy.Spider):
     # Link to the categories page
     # From this page will start crawling each category and its sub categories    
     categories_url = "https://www.amazon.com/b?node=17938598011"
-    
-    # Boolean used to idengtify the first response as it has
-    # different parsing than other responses
-    initial_response = True
+        
 
-    # List of the categories to be crawled
-    # Set to run time either to user specified or default categories
-    categories_to_crawl = []
+    def __init__(self):
+        # Boolean used to idengtify the first response as it has
+        # different parsing than other responses
+        self.initial_response = True
+        # List of the categories to be crawled
+        # Set to run time either to user specified or default categories
+        self.categories_to_crawl = []
 
 
     # Checks if categories have been passed through cmd args
