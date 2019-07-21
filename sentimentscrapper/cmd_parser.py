@@ -1,4 +1,14 @@
+from sentimentscrapper.exceptions import *
+
+
 class CmdParser():
+
+    # TODO: Move to another place
+    formats = [
+        'JSON',
+        'XML',
+        'CSV' 
+    ]
 
     def __init__(self, spider):
         self.spider = spider
@@ -11,14 +21,22 @@ class CmdParser():
         )
     
     def parse(self):
-        self.parse_out_file_name()
-        self.parse_out_file_format()
-
+        try:
+            self.parse_out_file_name()
+            self.parse_out_file_format()
+        except InvalidOutFormat as e:
+            e.print_description()
+            raise
+            
     def parse_out_file_name(self):
         self.spider.out_name = getattr(self.spider, 'out', 'out')
         
     def parse_out_file_format(self):
-        self.spider.out_format = getattr(self.spider, 'out-format', 'csv')
+        out_format = getattr(self.spider, 'out-format', None)
+        if out_format not in self.formats:
+            raise InvalidOutFormat
+        else:
+            self.spider.out_format = out_format
 
 
 class AmazonCmdParser(CmdParser):
