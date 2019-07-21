@@ -66,7 +66,7 @@ ROBOTSTXT_OBEY = True
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'sentimentscrapper.pipelines.AmazonReviewsVerificationPipeline': 300,
-   'sentimentscrapper.pipelines.AmazonReviewCSVExportPipeline' : 400
+   'sentimentscrapper.pipelines.ExportPipeline' : 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
