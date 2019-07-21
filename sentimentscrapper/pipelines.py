@@ -4,7 +4,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-from scrapy.exporters import CsvItemExporter
+from scrapy.exporters import *
 from scrapy.exceptions import DropItem
 
 class AmazonReviewsVerificationPipeline(object):
@@ -22,13 +22,20 @@ class AmazonReviewsVerificationPipeline(object):
             raise DropItem("Missing stars")
         
 
-class AmazonReviewCSVExportPipeline(object):
-    """ Exports the extracted revirew items to a csv file """
-    
-    def open_spider(self, spider):
-        f = open('amazon_reviews.csv','wb')
-        self.exporter = CsvItemExporter(f)
 
+class ExportPipeline(object):
+    """  """
+    formats_exporters = {
+        'json' : JsonItemExporter,
+        'xml' : XmlItemExporter,
+        'csv' : CsvItemExporter
+    }
+
+    def open_spider(self, spider):
+        f = open('{}.{}'.format(spider.out_name, spider.out_format),'wb')
+        self.exporter = self.formats_exporters[spider.out_format](f)
+        print("******************")
+        print(self.exporter)
 
     def process_item(self, item, spider):
         self.exporter.export_item(item)
@@ -36,3 +43,5 @@ class AmazonReviewCSVExportPipeline(object):
 
     def close_spider(self, spider):
         self.exporter.finish_exporting()
+
+
