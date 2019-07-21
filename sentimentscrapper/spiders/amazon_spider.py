@@ -1,22 +1,13 @@
 import scrapy
 import logging
-from sentimentscrapper.item_loaders import AmazonReviewLoader
 from urllib.parse import urljoin
+from sentimentscrapper.item_loaders import AmazonReviewLoader
+from sentimentscrapper.cmd_parser import AmazonCmdParser
+
 
 class AmazonSpider(scrapy.Spider):
 
     name = "amazonSpider"
-
-    default_categories = [
-        "Arts & Crafts" , "Automotive", "Baby", 
-        "Beauty & Personal Care", "Books", "computers",
-        "Electronics", "Women's Fashion", "Men's Fashion",
-        "Girl's Fashion", "Boy's Fashion", "Health & Household",
-        "Home & Kitchen", "Industrial & Scientific", "Luggage",
-        "Movies & Television", "Music, CDs & Vinyl", "Pet Supplies",
-        "Software", "Support & Outdoors", "Tools & Home Improvement",
-        "Toys & Games", "Video Games"
-    ]
 
     # The base url of the website that we append the categories' hrefs to 
     base_url = 'https://www.amazon.com'
@@ -26,13 +17,13 @@ class AmazonSpider(scrapy.Spider):
     categories_url = "https://www.amazon.com/b?node=17938598011"
         
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         # Boolean used to idengtify the first response as it has
         # different parsing than other responses
         self.initial_response = True
-        # List of the categories to be crawled
-        # Set to run time either to user specified or default categories
-        self.categories_to_crawl = []
+        cmd_parser = AmazonCmdParser(self)
+        cmd_parser.parse()
 
 
     # Checks if categories have been passed through cmd args
@@ -52,7 +43,6 @@ class AmazonSpider(scrapy.Spider):
     # First functions gets execution
     # Yileds requests to the main categories 
     def start_requests(self):
-        self.parse_cmd_args()
         yield scrapy.Request(self.categories_url, self.parse_initial_request)
 
 
