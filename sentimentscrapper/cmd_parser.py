@@ -32,7 +32,7 @@ class CmdParser():
         self.spider.out_name = getattr(self.spider, 'out', 'out')
         
     def parse_out_file_format(self):
-        out_format = getattr(self.spider, 'out-format', None)
+        out_format = getattr(self.spider, 'out-format', 'garbage').upper()
         if out_format not in self.formats:
             raise InvalidOutFormat
         else:
