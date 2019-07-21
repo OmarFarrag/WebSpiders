@@ -34,8 +34,6 @@ class ExportPipeline(object):
     def open_spider(self, spider):
         f = open('{}.{}'.format(spider.out_name, spider.out_format),'wb')
         self.exporter = self.formats_exporters[spider.out_format](f)
-        print("******************")
-        print(self.exporter)
 
     def process_item(self, item, spider):
         self.exporter.export_item(item)
