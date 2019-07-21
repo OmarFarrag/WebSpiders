@@ -3,6 +3,13 @@ class CmdParser():
     def __init__(self, spider):
         self.spider = spider
     
+    def print_description(self):
+        print("""
+        out             The name of the output file
+        out-format      The format of output data\
+        """
+        )
+    
     def parse(self):
         self.parse_out_file_name()
         self.parse_out_file_format()
@@ -11,7 +18,7 @@ class CmdParser():
         self.spider.out_name = getattr(self.spider, 'out', 'out')
         
     def parse_out_file_format(self):
-        self.spider.put_format = getattr(self.spider, 'out-format', 'csv')
+        self.spider.out_format = getattr(self.spider, 'out-format', 'csv')
 
 
 class AmazonCmdParser(CmdParser):
@@ -30,6 +37,13 @@ class AmazonCmdParser(CmdParser):
 
     def __init__(self, spider):
         super().__init__(spider)
+
+    def print_description(self):
+        super().print_description()
+        print(
+        """\
+        categories      The categories to crawl separated by a '-'
+        """)
     
     def parse(self):
         super().parse()
