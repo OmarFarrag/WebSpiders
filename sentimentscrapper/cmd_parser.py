@@ -25,17 +25,17 @@ class AmazonCmdParser(CmdParser):
     ]
 
 
-    def __init__(self):
+    def __init__(self, spider):
         super().__init__()
-        self.get_categories()
+        self.parse_categories()
 
     # Checks if categories have been passed through cmd args
     # If passed, set `categories_to_crawl` with them
     # Else, set it to default categories
     #
     # Arguments are passed like "-a categories=cat1-cat2-cat3-cat4"
-    def get_categories(self):
-        passed_categories = getattr(self,'categories',None)
+    def parse_categories(self, spider):
+        passed_categories = getattr(spider,'categories',None)
         if passed_categories is None :
             self.categories_to_crawl = list(self.default_categories)
         else:
