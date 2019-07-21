@@ -1,14 +1,17 @@
 class CmdParser():
 
-    def __init__(self):
-        out_name = self.get_out_file_name()
-        out_format = getattr(self,'out-format',None)
+    def __init__(self, spider):
+        self.spider = spider
+    
+    def parse(self):
+        self.parse_out_file_name()
+        self.parse_out_file_format()
 
-    def get_out_file_name(self):
-        return getattr(self, 'out', None)
+    def parse_out_file_name(self):
+        self.spider.out_name = getattr(self.spider, 'out', 'out')
         
-    def get_out_file_format(self):
-        return getattr(self, 'out-format', None)
+    def parse_out_file_format(self):
+        self.spider.put_format = getattr(self.spider, 'out-format', 'csv')
 
 
 class AmazonCmdParser(CmdParser):
@@ -26,7 +29,10 @@ class AmazonCmdParser(CmdParser):
 
 
     def __init__(self, spider):
-        super().__init__()
+        super().__init__(spider)
+    
+    def parse(self):
+        super().parse()
         self.parse_categories()
 
     # Checks if categories have been passed through cmd args
@@ -34,10 +40,10 @@ class AmazonCmdParser(CmdParser):
     # Else, set it to default categories
     #
     # Arguments are passed like "-a categories=cat1-cat2-cat3-cat4"
-    def parse_categories(self, spider):
-        passed_categories = getattr(spider,'categories',None)
+    def parse_categories(self):
+        passed_categories = getattr(self.spider,'categories',None)
         if passed_categories is None :
-            self.categories_to_crawl = list(self.default_categories)
+            self.spider.categories_to_crawl = list(self.default_categories)
         else:
-            self.categories_to_crawl = [x.strip() for x in ( passed_categories.split('-') )]
+            self.spider.categories_to_crawl = [x.strip() for x in ( passed_categories.split('-') )]
         
