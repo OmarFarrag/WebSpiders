@@ -22,6 +22,7 @@ class AmazonSpider(scrapy.Spider):
         # Boolean used to idengtify the first response as it has
         # different parsing than other responses
         self.initial_response = True
+        
         cmd_parser = AmazonCmdParser(self)
         cmd_parser.parse()
 
