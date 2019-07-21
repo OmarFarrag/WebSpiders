@@ -24,16 +24,21 @@ class CmdParser():
         try:
             self.parse_out_file_name()
             self.parse_out_file_format()
-        except InvalidOutFormat as e:
+        except (InvalidOutFormat, MissingArgument) as e:
             e.print_description()
             raise
+        
+            
             
     def parse_out_file_name(self):
         self.spider.out_name = getattr(self.spider, 'out', 'out')
         
     def parse_out_file_format(self):
-        out_format = getattr(self.spider, 'out-format', 'garbage').upper()
-        if out_format not in self.formats:
+        # TODO: change this missing thing
+        out_format = getattr(self.spider, 'out-format', 'MISSING').upper()
+        if out_format == "MISSING":
+            raise MissingArgument
+        elif out_format not in self.formats:
             raise InvalidOutFormat
         else:
             self.spider.out_format = out_format
