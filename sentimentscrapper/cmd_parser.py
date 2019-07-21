@@ -5,9 +5,9 @@ class CmdParser():
 
     # TODO: Move to another place
     formats = [
-        'JSON',
-        'XML',
-        'CSV' 
+        'json',
+        'xml',
+        'csv' 
     ]
 
     def __init__(self, spider):
@@ -27,16 +27,14 @@ class CmdParser():
         except (InvalidOutFormat, MissingArgument) as e:
             e.print_description()
             raise
-        
-            
-            
+               
     def parse_out_file_name(self):
         self.spider.out_name = getattr(self.spider, 'out', 'out')
         
     def parse_out_file_format(self):
         # TODO: change this missing thing
-        out_format = getattr(self.spider, 'out-format', 'MISSING').upper()
-        if out_format == "MISSING":
+        out_format = getattr(self.spider, 'out-format', 'missing').lower()
+        if out_format == "missing":
             raise MissingArgument
         elif out_format not in self.formats:
             raise InvalidOutFormat
