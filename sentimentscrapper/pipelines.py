@@ -6,6 +6,9 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from scrapy.exporters import *
 from scrapy.exceptions import DropItem
+from sentimentscrapper.spiders.amazon_spider import AmazonSpider
+
+
 
 class AmazonReviewsVerificationPipeline(object):
     def process_item(self, item, spider):
@@ -20,7 +23,15 @@ class AmazonReviewsVerificationPipeline(object):
                 raise DropItem("Missing comment")
         else:
             raise DropItem("Missing stars")
-        
+
+
+class VerificationPipelineManager(object):
+    verifiers = {
+        AmazonSpider : AmazonReviewsVerificationPipeline
+    }
+    def process_item(self, item, spider):
+        verifier = self.verifiers[spider.__class__]
+        return verifier().process_item(item, spider)
 
 
 class ExportPipeline(object):

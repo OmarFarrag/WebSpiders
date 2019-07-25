@@ -65,7 +65,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'sentimentscrapper.pipelines.AmazonReviewsVerificationPipeline': 300,
+   'sentimentscrapper.pipelines.VerificationPipelineManager': 300,
    'sentimentscrapper.pipelines.ExportPipeline' : 400
 }
 
